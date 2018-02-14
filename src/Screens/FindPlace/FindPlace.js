@@ -1,5 +1,11 @@
 import React, { Component } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Animated } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Animated
+} from "react-native";
 import { connect } from "react-redux";
 
 import PlaceList from "../../Components/PlaceList/PlaceList";

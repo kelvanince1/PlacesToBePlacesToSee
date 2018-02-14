@@ -41,6 +41,7 @@
 		DE7037731FF6BE150019C96E /* libReactNativeNavigation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DE7037711FF6BDFB0019C96E /* libReactNativeNavigation.a */; };
 		DEA068541FF6A556005D055C /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DEA068521FF6A523005D055C /* libRNVectorIcons.a */; };
 		DEA068561FF6A5F8005D055C /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DEA068551FF6A5F7005D055C /* Ionicons.ttf */; };
+		DEAC48C1203489590066DFAA /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DEAC48C2203489590066DFAA /* libRNImagePicker.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -356,6 +357,7 @@
 		DE70373D1FF6BDFB0019C96E /* ReactNativeNavigation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ReactNativeNavigation.xcodeproj; path = "../node_modules/react-native-navigation/ios/ReactNativeNavigation.xcodeproj"; sourceTree = "<group>"; };
 		DEA068321FF6A523005D055C /* RNVectorIcons.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNVectorIcons.xcodeproj; path = "../node_modules/react-native-vector-icons/RNVectorIcons.xcodeproj"; sourceTree = "<group>"; };
 		DEA068551FF6A5F7005D055C /* Ionicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
+		DEAC48C2203489590066DFAA /* libRNImagePicker.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRNImagePicker.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -371,6 +373,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DEAC48C1203489590066DFAA /* libRNImagePicker.a in Frameworks */,
 				DE0C225220333FDD00E7FDD3 /* libAirMaps.a in Frameworks */,
 				DE7037731FF6BE150019C96E /* libReactNativeNavigation.a in Frameworks */,
 				DEA068541FF6A556005D055C /* libRNVectorIcons.a in Frameworks */,
@@ -640,6 +643,7 @@
 		DEA068531FF6A556005D055C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DEAC48C2203489590066DFAA /* libRNImagePicker.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

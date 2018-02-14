@@ -36,6 +36,10 @@
         "source": "/Users/kelvanince/Projects/WDI/react-native-concepts/my-app/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/25.3.1/res/layout/abc_popup_menu_item_layout.xml"
     },
     {
+        "merged": "/Users/kelvanince/Projects/WDI/react-native-concepts/my-app/android/app/build/intermediates/res/merged/debug/layout/list_item.xml",
+        "source": "/Users/kelvanince/Projects/WDI/react-native-concepts/my-app/android/app/build/intermediates/exploded-aar/myapp/react-native-image-picker/unspecified/res/layout/list_item.xml"
+    },
+    {
         "merged": "/Users/kelvanince/Projects/WDI/react-native-concepts/my-app/android/app/build/intermediates/res/merged/debug/layout/design_navigation_item.xml",
         "source": "/Users/kelvanince/Projects/WDI/react-native-concepts/my-app/android/app/build/intermediates/exploded-aar/com.android.support/design/25.3.1/res/layout/design_navigation_item.xml"
     },
