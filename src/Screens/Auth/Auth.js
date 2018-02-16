@@ -6,7 +6,7 @@ import DefaultInput from '../../Components/UI/DefaultInput/DefaultInput';
 import HeadingText from '../../Components/UI/HeadingText/HeadingText';
 import MainText from '../../Components/UI/MainText/MainText';
 import ButtonWithBackground from '../../Components/UI/Button/ButtonWithBackground/ButtonWithBackground';
-import backgroundImage from '../../Assets/hoka.jpg';
+import backgroundImage from '../../Assets/wall.jpg';
 import validate from '../../Utility/Validation';
 import { tryAuth, authAutoSignIn } from '../../Store/Actions/index';
 

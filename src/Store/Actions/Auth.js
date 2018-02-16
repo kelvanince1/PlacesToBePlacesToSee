@@ -3,7 +3,7 @@ import { TRY_AUTH, AUTH_SET_TOKEN } from './ActionTypes';
 import { uiStartLoading, uiStopLoading } from './index';
 import startMainTabs from '../../Screens/MainTabs/startMainTabs';
 
-import { signUpUrl, signInUrl } from './config';
+import { signUpUrl, signInUrl, refreshUrl } from './config';
 
 export const tryAuth = (authData, authMode) => {
   return dispatch => {
@@ -34,7 +34,7 @@ export const tryAuth = (authData, authMode) => {
       if (!parsedRes.idToken) {
         alert('Login failed. Please try again')
       } else {
-          dispatch(authStoreToken(parsedRes.idToken, parsedRes.expiresIn))
+          dispatch(authStoreToken(parsedRes.idToken, parsedRes.expiresIn, parsedRes.refreshToken))
           startMainTabs();
       }
     });
@@ -48,12 +48,13 @@ export const authSetToken = (token) => {
   };
 };
 
-export const authStoreToken = (token, expiresIn) => {
+export const authStoreToken = (token, expiresIn, refreshToken) => {
   return dispatch => {
     dispatch(authSetToken(token));
     const now = new Date();
     const expiryDate = now.getTime() + expiresIn * 1000;
     AsyncStorage.setItem('pl:auth:token', token);
+    AsyncStorage.setItem('pl:auth:refreshToken', refreshToken);
     AsyncStorage.setItem('pl:auth:expiryDate', expiryDate.toString());
   };
 };
@@ -89,7 +90,36 @@ export const authGetToken = () => {
         resolve(token);
       }
     });
-    return promise;
+    return promise
+      .catch(err => {
+        return AsyncStorage.getItem('pl:auth:refreshToken')
+          .then(refreshToken => {
+            return fetch(refreshUrl, {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                  },
+                  body: "grant_type=refresh_token&refresh_token=" + refreshToken
+                })
+          })
+          .then(res => res.json())
+          .then(parsedRes => {
+            if(parsedRes.id_token) {
+              console.log('Refreshed token worked');
+              dispatch(authStoreToken(parsedRes.id_token, parsedRed.expires_in, parsedRes.refresh_token));
+              return parsedRes.id_token;
+            } else {
+              dispatch(authClearStorage());
+            }
+          });
+    })
+    .then(token => {
+      if (!token) {
+        throw new Error();
+      } else {
+        return token;
+      }
+    });
   };
 };
 
@@ -102,3 +132,10 @@ export const authAutoSignIn = () => {
     .catch(err => console.log('Failed to fetch token!'));
   }
 }
+
+export const authClearStorage = () => {
+  return dispatch => {
+    AsyncStorage.removeItem('pl:auth:token');
+    AsyncStorage.removeItem('pl:auth:expiryDate');
+  }
+};
