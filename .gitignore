@@ -13,6 +13,7 @@
 .env.production.local
 AndroidManifest.xml
 config.js
+places-to-see.json
 
 npm-debug.log*
 yarn-debug.log*
