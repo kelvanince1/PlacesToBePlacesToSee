@@ -4,18 +4,23 @@ import { storeImage, deleteUrl, url } from './config';
 
 export const addPlace = (placeName, location, image) => {
     return dispatch => {
+      let authToken;
         dispatch(uiStartLoading());
         dispatch(authGetToken())
         .catch(() => {
           alert('No valid token found')
         })
           .then(token => {
+            authToken = token;
             return fetch(storeImage, {
                 method: "POST",
                 body: JSON.stringify({
                     image: image.base64
-                })
-            })
+                }),
+                headers: {
+                  "Authorization": "Bearer " + authToken
+                }
+            });
           })
         .catch(err => {
           console.log(err);
@@ -30,7 +35,7 @@ export const addPlace = (placeName, location, image) => {
                 location: location,
                 image: parsedRes.imageUrl
             };
-            return fetch(url, {
+            return fetch(url + '?auth=' + authToken, {
                 method: "POST",
                 body: JSON.stringify(placeData)
             })
