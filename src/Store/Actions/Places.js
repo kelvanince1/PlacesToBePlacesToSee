@@ -1,16 +1,22 @@
 import { SET_PLACES, REMOVE_PLACE } from './ActionTypes';
-import { uiStartLoading, uiStopLoading } from './index';
+import { uiStartLoading, uiStopLoading, authGetToken } from './index';
 import { storeImage, deleteUrl, url } from './config';
 
 export const addPlace = (placeName, location, image) => {
     return dispatch => {
         dispatch(uiStartLoading());
-        fetch(storeImage, {
-            method: "POST",
-            body: JSON.stringify({
-                image: image.base64
-            })
+        dispatch(authGetToken())
+        .catch(() => {
+          alert('No valid token found')
         })
+          .then(token => {
+            return fetch(storeImage, {
+                method: "POST",
+                body: JSON.stringify({
+                    image: image.base64
+                })
+            })
+          })
         .catch(err => {
           console.log(err);
           alert('Something went wrong. Please try again');
@@ -29,24 +35,27 @@ export const addPlace = (placeName, location, image) => {
                 body: JSON.stringify(placeData)
             })
         })
+        .then(res => res.json())
+        .then(parsedRes => {
+            console.log(parsedRes);
+            dispatch(uiStopLoading());
+        })
         .catch(err => {
           console.log(err);
           alert('Something went wrong. Please try again');
           dispatch(uiStopLoading());
         })
-        .then(res => res.json())
-        .then(parsedRes => {
-            console.log(parsedRes);
-            dispatch(uiStopLoading());
-        });
     };
 };
 
 export const getPlaces = () => {
   return dispatch => {
-    fetch(url)
-      .catch(err => {
-        alert('Something went wrong. Please try again')
+    dispatch(authGetToken())
+      .then(token => {
+        return fetch(url + '?auth=' + token)
+      })
+      .catch(() => {
+        alert('No valid token found')
       })
       .then(res => res.json())
       .then(parsedRes => {
@@ -61,6 +70,9 @@ export const getPlaces = () => {
           });
         }
         dispatch(setPlaces(places));
+      })
+      .catch(err => {
+        alert('Something went wrong. Please try again');
       });
   };
 };
@@ -74,17 +86,23 @@ export const setPlaces = places => {
 
 export const deletePlace = (key) => {
     return dispatch => {
-      dispatch(removePlace(key));
-      fetch(deleteUrl + key + ".json", {
-          method: "DELETE"
+      dispatch(authGetToken())
+      .catch(() => {
+        alert('No valid token found')
+      })
+        .then(token => {
+          dispatch(removePlace(key));
+          return fetch(deleteUrl + key + ".json?auth=" + token, {
+              method: "DELETE"
+          })
+        })
+      .then(res => res.json())
+      .then(parsedRes => {
+        console.log('Done!');
       })
       .catch(err => {
         console.log(err);
         alert('Something went wrong. Please try again');
-      })
-      .then(res => res.json())
-      .then(parsedRes => {
-        console.log('Done!');
       })
     };
 };
