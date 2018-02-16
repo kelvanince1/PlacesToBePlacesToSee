@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { connect } from "react-redux";
 
-import { addPlace } from "../../Store/Actions/index";
+import { addPlace, startAddPlace } from "../../Store/Actions/index";
 import PlaceInput from "../../Components/PlaceInput/PlaceInput";
 import MainText from "../../Components/UI/MainText/MainText";
 import HeadingText from "../../Components/UI/HeadingText/HeadingText";
@@ -54,9 +54,21 @@ class SharePlaceScreen extends Component {
         }
       }
     });
+  };
+
+  componentDidUpdate() {
+    if (this.props.placeAdded) {
+      this.props.navigator.switchToTab({ tabIndex: 0 });
+      // this.props.onStartAddPlace();
+    }
   }
 
   onNavigatorEvent = event => {
+    if (event.type === "ScreenChangedEvent") {
+      if (event.id === "willAppear") {
+        this.props.onStartAddPlace();
+      }
+    }
     if (event.type === "NavBarButtonPress") {
       if (event.id === "sideDrawerToggle") {
         this.props.navigator.toggleDrawer({
@@ -108,7 +120,7 @@ class SharePlaceScreen extends Component {
         }
       };
     });
-  }
+  };
 
   placeAddedHandler = () => {
     this.props.onAddPlace(
@@ -119,6 +131,7 @@ class SharePlaceScreen extends Component {
     this.reset();
     this.imagePicker.reset();
     this.locationPicker.reset();
+    // this.props.navigator.switchToTab({tabIndex: 0});
   };
 
   render() {
@@ -137,21 +150,26 @@ class SharePlaceScreen extends Component {
     if (this.props.isLoading) {
       submitButton = <ActivityIndicator />;
     }
+
     return (
       <ScrollView>
         <View style={styles.container}>
           <MainText>
             <HeadingText>Share a Place with us!</HeadingText>
           </MainText>
-          <PickImage onImagePicked={this.imagePickedHandler} ref={ref => (this.imagePicker = ref)} />
-          <PickLocation onLocationPick={this.locationPickedHandler} ref={ref => (this.locationPicker = ref)} />
+          <PickImage
+            onImagePicked={this.imagePickedHandler}
+            ref={ref => (this.imagePicker = ref)}
+          />
+          <PickLocation
+            onLocationPick={this.locationPickedHandler}
+            ref={ref => (this.locationPicker = ref)}
+          />
           <PlaceInput
             placeData={this.state.controls.placeName}
             onChangeText={this.placeNameChangedHandler}
           />
-          <View style={styles.button}>
-            {submitButton}
-          </View>
+          <View style={styles.button}>{submitButton}</View>
         </View>
       </ScrollView>
     );
@@ -181,13 +199,16 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   return {
-    isLoading: state.ui.isLoading
+    isLoading: state.ui.isLoading,
+    placeAdded: state.places.placeAdded
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    onAddPlace: (placeName, location, image) => dispatch(addPlace(placeName, location, image))
+    onAddPlace: (placeName, location, image) =>
+      dispatch(addPlace(placeName, location, image)),
+    onStartAddPlace: () => dispatch(startAddPlace())
   };
 };
 
