@@ -34,7 +34,7 @@ export const tryAuth = (authData, authMode) => {
       if (!parsedRes.idToken) {
         alert('Login failed. Please try again')
       } else {
-          dispatch(authStoreToken(parsedRes.idToken))
+          dispatch(authStoreToken(parsedRes.idToken, parsedRes.expiresIn))
           startMainTabs();
       }
     });
@@ -48,10 +48,13 @@ export const authSetToken = (token) => {
   };
 };
 
-export const authStoreToken = (token) => {
+export const authStoreToken = (token, expiresIn) => {
   return dispatch => {
     dispatch(authSetToken(token));
+    const now = new Date();
+    const expiryDate = now.getTime() + expiresIn * 1000;
     AsyncStorage.setItem('pl:auth:token', token);
+    AsyncStorage.setItem('pl:auth:expiryDate', expiryDate.toString());
   };
 };
 
@@ -60,12 +63,28 @@ export const authGetToken = () => {
     const promise = new Promise((resolve, reject) => {
       const token = getState().auth.token;
       if (!token) {
+        let fetchedToken;
         AsyncStorage.getItem('pl:auth:token')
           .catch(err => reject())
           .then(tokenFromStorage => {
-            dispatch(authSetToken(tokenFromStorage))
-            resolve(tokenFromStorage)
+            fetchedToken = tokenFromStorage;
+            if (!tokenFromStorage) {
+              reject();
+              return;
+            }
+            return AsyncStorage.getItem('pl:auth:expiryDate')
           })
+          .then(expiryDate => {
+            const parsedExpiryDate = new Date(parseInt(expiryDate));
+            const now = new Date();
+            if (parsedExpiryDate > now) {
+              dispatch(authSetToken(fetchedToken));
+              resolve(fetchedToken);
+            } else {
+              reject();
+            }
+          })
+          .catch(err => reject());
       } else {
         resolve(token);
       }
@@ -73,3 +92,13 @@ export const authGetToken = () => {
     return promise;
   };
 };
+
+export const authAutoSignIn = () => {
+  return dispatch => {
+    dispatch(authGetToken())
+    .then(token => {
+      startMainTabs();
+    })
+    .catch(err => console.log('Failed to fetch token!'));
+  }
+}

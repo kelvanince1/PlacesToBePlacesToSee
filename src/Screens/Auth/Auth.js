@@ -8,7 +8,7 @@ import MainText from '../../Components/UI/MainText/MainText';
 import ButtonWithBackground from '../../Components/UI/Button/ButtonWithBackground/ButtonWithBackground';
 import backgroundImage from '../../Assets/hoka.jpg';
 import validate from '../../Utility/Validation';
-import { tryAuth } from '../../Store/Actions/index';
+import { tryAuth, authAutoSignIn } from '../../Store/Actions/index';
 
 class AuthScreen extends Component {
   state = {
@@ -45,6 +45,10 @@ class AuthScreen extends Component {
   constructor(props) {
     super(props);
     Dimensions.addEventListener("change", this.updateStyles);
+  }
+
+  componentDidMount() {
+    this.props.onAutoSignIn();
   }
 
   componentWillUnmount() {
@@ -247,7 +251,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onTryAuth: (authData, authMode) => dispatch(tryAuth(authData, authMode))
+    onTryAuth: (authData, authMode) => dispatch(tryAuth(authData, authMode)),
+    onAutoSignIn: () => dispatch(authAutoSignIn())
   };
 };
 
